@@ -191,9 +191,9 @@ const ReactElement = function(type, key, ref, self, source, owner, props) {
       value: source,
     });
     if (Object.freeze) {
-      Object.freeze(element.props);
       Object.freeze(element);
     }
+    Object.freeze(element.props);
   }
 
   return element;
@@ -380,6 +380,9 @@ export function createElement(type, config, children) {
       if (hasOwnProperty.call(config, propName)) {
         allowPropsToReferenceConfig = false;
       }
+    }
+    if (Object.isFrozen(config)) {
+      allowPropsToReferenceConfig = false;
     }
 
     if (type && type.defaultProps) {
