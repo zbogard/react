@@ -24,7 +24,7 @@ import {createRef} from './ReactCreateRef';
 import {forEach, map, count, toArray, only} from './ReactChildren';
 import {
   createElement as createElementProd,
-  createFastElement as createFastElementProd,
+  f as fProd,
   createFactory as createFactoryProd,
   cloneElement as cloneElementProd,
   isValidElement,
@@ -62,7 +62,7 @@ import {startTransition} from './ReactStartTransition';
 
 // TODO: Move this branching into the other module instead and just re-export.
 const createElement = __DEV__ ? createElementWithValidation : createElementProd;
-const createFastElement = __DEV__ ? createElementWithValidation : createFastElementProd;
+const f = __DEV__ ? createElementWithValidation : fProd;
 
 const cloneElement = __DEV__ ? cloneElementWithValidation : cloneElementProd;
 const createFactory = __DEV__ ? createFactoryWithValidation : createFactoryProd;
@@ -102,7 +102,7 @@ export {
   REACT_DEBUG_TRACING_MODE_TYPE as unstable_DebugTracingMode,
   REACT_SUSPENSE_TYPE as Suspense,
   createElement,
-  createFastElement,
+  f,
   cloneElement,
   isValidElement,
   ReactVersion as version,

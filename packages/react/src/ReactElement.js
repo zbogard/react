@@ -341,7 +341,7 @@ export function jsxDEV(type, config, maybeKey, source, self) {
   );
 }
 
-export function createFastElement(type, config, children) {
+export function f(type, config, children) {
   let propName;
 
   // Reserved names are extracted

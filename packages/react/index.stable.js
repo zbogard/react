@@ -31,7 +31,7 @@ export {
   StrictMode,
   Suspense,
   createElement,
-  createFastElement,
+  f,
   cloneElement,
   isValidElement,
   version,
