@@ -341,6 +341,100 @@ export function jsxDEV(type, config, maybeKey, source, self) {
   );
 }
 
+export function f(type, config, children) {
+  let propName;
+
+  // Reserved names are extracted
+  let props = config;
+
+  let key = null;
+  let ref = null;
+  let self = null;
+  let source = null;
+
+  if (props != null) {
+    if (hasValidRef(props)) {
+      ref = props.ref;
+
+      if (__DEV__) {
+        warnIfStringRefCannotBeAutoConverted(props);
+      }
+    }
+    if (hasValidKey(props)) {
+      key = '' + props.key;
+    }
+
+    self = props.__self === undefined ? null : props.__self;
+    source = props.__source === undefined ? null : props.__source;
+
+    let shouldRecomputeProps = false;
+
+    for (propName in RESERVED_PROPS) {
+      if (hasOwnProperty.call(props, propName)) {
+        shouldRecomputeProps = true;
+      }
+    }
+
+    if (shouldRecomputeProps) {
+      // eslint-disable-next-line no-unused-vars
+      const {key: _key, ref: _ref, __source, __self, ...rest} = props;
+
+      props = rest;
+    }
+  }
+
+  // Children can be more than one argument, and those are transferred onto
+  // the newly allocated props object.
+  const childrenLength = arguments.length - 2;
+  if (childrenLength === 1) {
+    props.children = children;
+  } else if (childrenLength > 1) {
+    const childArray = Array(childrenLength);
+    for (let i = 0; i < childrenLength; i++) {
+      childArray[i] = arguments[i + 2];
+    }
+    if (__DEV__) {
+      if (Object.freeze) {
+        Object.freeze(childArray);
+      }
+    }
+    props.children = childArray;
+  }
+
+  // Resolve default props
+  if (type && type.defaultProps) {
+    const defaultProps = type.defaultProps;
+    for (propName in defaultProps) {
+      if (props[propName] === undefined) {
+        props[propName] = defaultProps[propName];
+      }
+    }
+  }
+  if (__DEV__) {
+    if (key || ref) {
+      const displayName =
+        typeof type === 'function'
+          ? type.displayName || type.name || 'Unknown'
+          : type;
+      if (key) {
+        defineKeyPropWarningGetter(props, displayName);
+      }
+      if (ref) {
+        defineRefPropWarningGetter(props, displayName);
+      }
+    }
+  }
+  return ReactElement(
+    type,
+    key,
+    ref,
+    self,
+    source,
+    ReactCurrentOwner.current,
+    props,
+  );
+}
+
 /**
  * Create and return a new ReactElement of the given type.
  * See https://reactjs.org/docs/react-api.html#createelement
